@@ -25,8 +25,8 @@ def handle_path(path, base_path, bucket, include_root=True):
 
 def handle_folder(path, base_path, bucket, include_root=True):
     for item in listdir(path):
-        path = join(path, item)
-        handle_path(path, base_path, bucket, include_root)
+        path2 = join(path, item)
+        handle_path(path2, base_path, bucket, include_root)
 
 
 def handle_file(path, base_path, bucket, include_root=True):
@@ -41,7 +41,6 @@ def handle_file(path, base_path, bucket, include_root=True):
         filename = base_upload_path + '/' + filename
     print 'Uploading "%s"' % filename
     k = Key(bucket, filename)
-    print ''
     k.set_contents_from_filename(path)
 
 
