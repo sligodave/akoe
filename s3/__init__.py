@@ -13,7 +13,7 @@ def upload_path_to_s3(path,
                 include_root=True):
     conn = boto.connect_s3(access_key, secret_access_key)
     bucket = conn.get_bucket(bucket_name)
-    handle_path(path, path, include_root, bucket)
+    handle_path(path, path, bucket, include_root)
 
 
 def handle_path(path, base_path, bucket, include_root=True):
@@ -41,6 +41,7 @@ def handle_file(path, base_path, bucket, include_root=True):
         filename = base_upload_path + '/' + filename
     print 'Uploading "%s"' % filename
     k = Key(bucket, filename)
+    print ''
     k.set_contents_from_filename(path)
 
 
