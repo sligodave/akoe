@@ -42,7 +42,7 @@ def handle_file(path, base_path, bucket, include_root=True, overwrite=False):
             base_upload_path = base_upload_path[1:]
         filename = base_upload_path + '/' + filename
     k = Key(bucket, filename)
-    if overwrite and k.exists():
+    if overwrite == False and k.exists():
         print 'Exists "%s"' % filename
         return
     print 'Uploading "%s"' % filename
