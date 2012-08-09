@@ -46,7 +46,7 @@ def handle_file(path, base_path, bucket, include_root=True, overwrite=False):
         print 'Exists "%s"' % filename
         return
     print 'Uploading "%s"' % filename
-    k.set_contents_from_filename(path)
+    k.set_contents_from_filename(path, policy='public-read')
 
 
 if __name__ == "__main__":
