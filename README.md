@@ -5,6 +5,9 @@ All Kinds of Everything - Repository where I store all the scripts that I use ov
 
 
 TODO:
+
 Licence
+
 Restructure
+
 Documentation
