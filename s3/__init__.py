@@ -10,26 +10,28 @@ def upload_path_to_s3(path,
                 access_key,
                 secret_access_key,
                 bucket_name,
-                include_root=True):
+                include_root=True,
+                overwrite=False):
     conn = boto.connect_s3(access_key, secret_access_key)
     bucket = conn.get_bucket(bucket_name)
-    handle_path(path, path, bucket, include_root)
+    handle_path(path, path, bucket, include_root, overwrite)
 
 
-def handle_path(path, base_path, bucket, include_root=True):
+def handle_path(path, base_path, bucket, include_root=True, overwrite=False):
     if isdir(path):
-        handle_folder(path, base_path, bucket, include_root)
+        handle_folder(path, base_path, bucket, include_root, overwrite)
     elif isfile(path):
-        handle_file(path, base_path, bucket, include_root)
+        handle_file(path, base_path, bucket, include_root, overwrite)
 
 
-def handle_folder(path, base_path, bucket, include_root=True):
+def handle_folder(path, base_path, bucket, include_root=True, overwrite=False):
     for item in listdir(path):
         path2 = join(path, item)
-        handle_path(path2, base_path, bucket, include_root)
+        handle_path(path2, base_path, bucket, include_root, overwrite)
 
 
-def handle_file(path, base_path, bucket, include_root=True):
+def handle_file(path, base_path, bucket, include_root=True, overwrite=False):
+    base_path = abspath(base_path)
     path = abspath(path)
     filename = path[len(base_path):]
     if filename.startswith('/'):
@@ -39,8 +41,11 @@ def handle_file(path, base_path, bucket, include_root=True):
         if base_upload_path.endswith('/'):
             base_upload_path = base_upload_path[1:]
         filename = base_upload_path + '/' + filename
-    print 'Uploading "%s"' % filename
     k = Key(bucket, filename)
+    if overwrite and k.exists():
+        print 'Exists "%s"' % filename
+        return
+    print 'Uploading "%s"' % filename
     k.set_contents_from_filename(path)
 
 
@@ -57,9 +62,13 @@ if __name__ == "__main__":
     # Whether we include the root folder name in the uploaded filename
     include_root = True if len(argv) <= 5 else\
                     {'True': True, 'False': False}[argv[5]]
+    # Whether we overwrite items that already exist in the bucket
+    overwrite = True if len(argv) <= 6 else\
+                    {'True': True, 'False': False}[argv[6]]
 
     upload_path_to_s3(path,
                       access_key,
                       secret_access_key,
                       bucket_name,
-                      include_root)
+                      include_root,
+                      overwrite)
