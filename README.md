@@ -11,3 +11,5 @@ Licence
 Restructure
 
 Documentation
+
+s3 - Make uploaded item public option
